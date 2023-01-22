@@ -24,7 +24,7 @@ app_location="${app_location%ThemeMaster}"
 # APP SETTINGS VARIABLES #
 ##########################
 # ThemeMaster Reference
-github_app_owner="JohnIrvine1433"
+github_app_owner="Stephenm64"
 github_app_repo="ThemeMaster"
 current_app_version="4.3.0"
 # Default app settings (overwritten by ThemeMaster.cfg)
@@ -152,6 +152,9 @@ function ExitApp() {
     $sudo_prefix systemctl restart emustation
   fi
   clear > /dev/tty1
+  if [[ -e "/dev/input/by-path/platform-gou_joypad-event-joystick" ]]; then
+    $sudo_prefix graphics 1
+  fi
 }
 
 #
@@ -229,6 +232,8 @@ function InitLoader() {
     param_device="oga"
   elif [[ -e "/dev/input/by-path/platform-odroidgo3-joypad-event-joystick" ]]; then
     param_device="ogs"
+ elif [[ -e "/dev/input/by-path/platform-gou_joypad-event-joystick" ]]; then
+    param_device="ogu"
   elif [[ -e "/dev/input/by-path/platform-gameforce-gamepad-event-joystick" ]]; then
     param_device="chi"
   else
@@ -245,6 +250,9 @@ function InitLoader() {
   #
   # App initialisation
   #
+  if [[ $param_device == "ogu" ]]; then
+    $sudo_prefix graphics 0
+  fi
   SetColorScheme
   dialog --clear
   dialog --infobox "Initialisation... Please wait !" 5 50 >$ttyoutput
